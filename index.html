@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Cast - TikTok Connection</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #ff0050 0%, #00f2ea 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .container { 
+            text-align: center; 
+            padding: 40px; 
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .logo { font-size: 48px; margin-bottom: 20px; }
+        h1 { font-size: 32px; margin-bottom: 10px; }
+        h2 { font-size: 20px; margin-bottom: 30px; opacity: 0.9; }
+        .status { 
+            padding: 20px; 
+            border-radius: 10px; 
+            font-size: 18px; 
+            font-weight: 500;
+        }
+        .success { 
+            background: rgba(76, 175, 80, 0.2); 
+            border: 2px solid #4CAF50; 
+            color: #4CAF50; 
+        }
+        .error { 
+            background: rgba(244, 67, 54, 0.2); 
+            border: 2px solid #f44336; 
+            color: #f44336; 
+        }
+        .processing { 
+            background: rgba(255, 193, 7, 0.2); 
+            border: 2px solid #FFC107; 
+            color: #FFC107; 
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #FFC107;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎯</div>
+        <h1>Post Cast</h1>
+        <h2>TikTok Connection</h2>
+        <div id="status" class="status processing">
+            <div class="spinner"></div>
+            Processing TikTok authorization...
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        const errorDescription = urlParams.get('error_description');
+        
+        setTimeout(() => {
+            if (error) {
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').innerHTML = 
+                    `❌ Connection Failed<br><small>${error}: ${errorDescription || 'Unknown error'}</small>`;
+            } else if (code) {
+                document.getElementById('status').className = 'status success';
+                document.getElementById('status').innerHTML = 
+                    `✅ TikTok Connected Successfully!<br><small>Redirecting to app...</small>`;
+                
+                // Redirect to app after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'postcast://tiktok-success?code=' + code;
+                }, 2000);
+            } else {
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').innerHTML = 
+                    '❌ No authorization code received<br><small>Please try again from the app</small>';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
